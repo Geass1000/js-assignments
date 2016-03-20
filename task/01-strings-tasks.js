@@ -274,7 +274,8 @@ function isString(value) {
  *   'K♠' => 51
  */
 function getCardId(value) {
-    var index = 'A♣2♣3♣4♣5♣6♣7♣8♣9♣10♣J♣Q♣K♣A♦2♦3♦4♦5♦6♦7♦8♦9♦10♦J♦Q♦K♦A♥2♥3♥4♥5♥6♥7♥8♥9♥10♥J♥Q♥K♥A♠2♠3♠4♠5♠6♠7♠8♠9♠10♠J♠Q♠K♠'.indexOf(value);
+    var str = 'A♣2♣3♣4♣5♣6♣7♣8♣9♣10♣J♣Q♣K♣A♦2♦3♦4♦5♦6♦7♦8♦9♦10♦J♦Q♦K♦A♥2♥3♥4♥5♥6♥7♥8♥9♥10♥J♥Q♥K♥A♠2♠3♠4♠5♠6♠7♠8♠9♠10♠J♠Q♠K♠';
+    var index = str.indexOf(value);
     
     return Math.floor(index / 2) - Math.floor((index + 6) / 54);
     // Pos: J♣ - 21; J♦ - 48; J♥ - 75; J♠ - 102;
