@@ -104,12 +104,7 @@ function getArrayOfStrings(arr) {
  *    [ false, 0, NaN, '', undefined ]   => [ ]
  */
 function removeFalsyValues(arr) {
-   return arr.filter(function (d) {
-     if ((d !== '') && (d !== false) && (d !== undefined) && (d !== null) && (d !== 0) && !Number.isNaN(d)) 
-        return true;
-     else
-        return false;
-   });
+   return arr.filter( d => d );
 }
 
 /**
@@ -370,12 +365,7 @@ function getItemsSum(arr) {
  *  [ null, undefined, NaN, false, 0, '' ]  => 6
  */
 function getFalsyValuesCount(arr) {
-   return arr.filter(function (d) {
-     if ((d !== '') && (d !== false) && (d !== undefined) && (d !== null) && (d !== 0) && !Number.isNaN(d)) 
-        return false;
-     else
-        return true;
-   }).length;
+   return arr.filter( d => !d ).length;
 }
 
 /**
