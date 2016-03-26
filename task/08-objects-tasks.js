@@ -23,7 +23,27 @@
  *    console.log(r.getArea());   // => 200
  */
 function Rectangle(width, height) {
-    throw new Error('Not implemented');
+    var obj = Object.create(Object.prototype, {
+        width: { 
+            value: width,
+            writable: true,
+            enumerable: true,
+            configurable: true
+        },
+        height: { 
+            value: height,
+            writable: true,
+            enumerable: true,
+            configurable: true 
+        },
+        getArea: { 
+            value: function () { return this.width * this.height; },
+            writable: true,
+            enumerable: false,
+            configurable: true
+        }        
+    }); 
+    return obj;
 }
 
 
@@ -38,7 +58,7 @@ function Rectangle(width, height) {
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
 function getJSON(obj) {
-    throw new Error('Not implemented');
+   return JSON.stringify(obj);
 }
 
 
@@ -54,7 +74,18 @@ function getJSON(obj) {
  *
  */
 function fromJSON(proto, json) {
-    throw new Error('Not implemented');
+    var obj = new proto.constructor();
+    var js = JSON.parse(json);
+    for (var i in js)
+    {
+        Object.defineProperty(obj, i, { 
+            value: js[i],
+            writable: true,
+            enumerable: true,
+            configurable: true
+        });
+    }
+    return obj;
 }
 
 
@@ -109,32 +140,133 @@ function fromJSON(proto, json) {
 const cssSelectorBuilder = {
 
     element: function(value) {
-        throw new Error('Not implemented');
+        return (new myCssSelectorBuilder()).element(value);
     },
 
     id: function(value) {
-        throw new Error('Not implemented');
+        return (new myCssSelectorBuilder()).id(value);
     },
 
     class: function(value) {
-        throw new Error('Not implemented');
+        return (new myCssSelectorBuilder()).class(value);
     },
 
     attr: function(value) {
-        throw new Error('Not implemented');
+        return (new myCssSelectorBuilder()).attr(value);
     },
 
     pseudoClass: function(value) {
-        throw new Error('Not implemented');
+        return (new myCssSelectorBuilder()).pseudoClass(value);
     },
 
     pseudoElement: function(value) {
-        throw new Error('Not implemented');
+        return (new myCssSelectorBuilder()).pseudoElement(value);
     },
 
     combine: function(selector1, combinator, selector2) {
-        throw new Error('Not implemented');
+        return (new myCssSelectorBuilder()).combine(selector1, 
+                                                    combinator, 
+                                                    selector2);
     },
+};
+
+function myCssSelectorBuilder()
+{
+    this.arrSelector = [];
+
+    this.arrOrder = ['el', '#', 'cl', 'at', 'pc', 'pe'];
+    this.arrCheckOrder = [];    
+}
+
+myCssSelectorBuilder.prototype = {
+
+    check: function() {
+        var len = this.arrCheckOrder.length;
+        if (len > 1)
+            if (this.arrOrder.indexOf(this.arrCheckOrder[len - 2]) > 
+                this.arrOrder.indexOf(this.arrCheckOrder[len - 1]))
+                throw ( new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element') );
+            
+        return this;
+    },
+
+    element: function(value) {
+        if (this.arrCheckOrder.indexOf('el') !== -1)
+            throw ( new Error('Element, id and pseudo-element should not occur more then one time inside the selector') );
+        
+        this.arrCheckOrder.push('el');
+        this.check();
+
+        this.arrSelector.push(value);
+        return this;
+    },
+
+    id: function(value) {
+        if (this.arrCheckOrder.indexOf('#') !== -1)
+            throw ( new Error('Element, id and pseudo-element should not occur more then one time inside the selector') );
+        
+        this.arrCheckOrder.push('#');
+        this.check();
+
+        value = '#' + value;
+        this.arrSelector.push(value);        
+        return this;
+    },
+
+    class: function(value) {
+        this.arrCheckOrder.push('cl');
+        this.check();
+
+        value = '.' + value;
+        this.arrSelector.push(value);
+        return this;
+    },
+
+    attr: function(value) {
+        this.arrCheckOrder.push('at');
+        this.check();
+
+        value = '[' + value + ']';
+        this.arrSelector.push(value);
+        return this;
+    },
+
+    pseudoClass: function(value) {
+        this.arrCheckOrder.push('pc');
+        this.check();
+
+        value = ':' + value;
+        this.arrSelector.push(value);
+        return this;
+    },
+
+    pseudoElement: function(value) {
+        if (this.arrCheckOrder.indexOf('pe') !== -1)
+            throw ( new Error('Element, id and pseudo-element should not occur more then one time inside the selector') );
+
+        this.arrCheckOrder.push('pe');
+        this.check();
+
+        value = '::' + value;
+        this.arrSelector.push(value);
+        return this;
+    },
+
+    combine: function(selector1, combinator, selector2) {
+        var value = selector1.stringify() 
+                    + " " + combinator + " " 
+                    + selector2.stringify();
+        this.arrSelector.push(value);
+        return this;
+    },
+
+    stringify: function() {
+        return this.arrSelector.join('');
+    },  
+
+    toString: function() {
+        return this.stringify();
+    }, 
 };
 
 
