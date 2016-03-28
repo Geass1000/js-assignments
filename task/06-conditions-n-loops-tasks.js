@@ -360,7 +360,7 @@ function getDigitalRoot(num) {
 function isBracketsBalanced(str) {
     var tmp;
     do {
-        tmp = str
+        tmp = str;
         str = str.replace(/\[\]|\{\}|\(\)|\<\>/g, () => '');
     }
     while (tmp !== str);
@@ -402,76 +402,35 @@ function isBracketsBalanced(str) {
  */
 function timespanToHumanString(startDate, endDate) {
     var date = new Date(endDate - startDate);
-    var ms = date.valueOf() / 1000, // sec
-        msec = date.getUTCMilliseconds() / 1000, //sec
-        sec =  Math.floor(date.valueOf() /1000) % 60, // sec
-        min =  Math.floor(date.valueOf() /1000/60) % 60, // min
-        hour = Math.floor(date.valueOf() /1000/60/60) % 24, // hour
-        day =  Math.floor(date.valueOf() /1000/60/60/24); // day
+    var time = date.valueOf(),
+        sec =  1000,
+        min =  60 * sec,
+        hour = 60 * min,
+        day =  24 * hour,
+        month = 30 * day,
+        year = 12 * month;
 
-    var brd = sec + msec; //sec  
-    if ((sec >= 0) && (brd <= 45) && (45 >= ms))
+    if (time <= 45 * sec)
         return 'a few seconds ago';
-
-    brd += min * 60; // sec
-    if ((brd <= 90) && (90 >= ms))
+    if (time <= 90 * sec)
         return 'a minute ago';
-
-    brd /= 60; // min
-    ms /= 60; // min
-    var range = sec + msec; // sec
-    if ((brd <= 45) && (45 >= ms))
-        if (range > 30)
-            return (min + 1) + ' minutes ago';
-        else
-            return min + ' minutes ago';
-
-    brd += hour * 60; // min
-    if ((brd <= 90) && (90 >= ms))
-        return 'an hour ago';    
-
-    brd /= 60; // hour
-    ms /= 60; // hour
-    range = range / 60 + min; // min
-    if ((brd <= 22) && (22 >= ms))
-        if (range > 30)
-            return (hour + 1) + ' hours ago';
-        else
-            return hour + ' hours ago';
-
-    brd += day * 24; // hour
-    if ((brd <= 36) && (36 >= ms))
-        return 'a day ago';  
-
-    brd /= 24; // day
-    ms /= 24; // day
-    range = range / 60 + hour; // hour
-    if ((brd <= 25) && (25 >= ms))
-        if (range > 12)
-            return (day + 1) + ' days ago';
-        else
-            return day + ' days ago';
-
-    if ((brd <= 45) && (45 >= ms))
-        return 'a month ago';  
-
-    range = range / 24 + day % 30; // day
-    var month = Math.floor(date.valueOf() /1000/60/60/24/30) % 12;
-    if ((brd <= 345) && (345 >= ms))
-        if (range > 15)
-            return (month + 1) + ' months ago';
-        else
-            return month + ' months ago';
-
-    if ((brd <= 545) && (545 >= ms))
-        return 'a year ago'; 
-
-    range = range / 30 + month; // month
-    var year = Math.floor(date.valueOf() /1000/60/60/24/30/12);
-    if (range > 6)
-        return (year + 1) + ' years ago';
-    else
-        return year + ' years ago';
+    if (time <= 45 * min)
+        return Math.round((time - 1) / min) + ' minutes ago';
+    if (time <= 90 * min)
+        return 'an hour ago';
+    if (time <= 22 * hour)
+        return Math.round((time - 1) / hour) + ' hours ago';
+    if (time <= 36 * hour)
+        return 'a day ago';
+    if (time <= 25 * day)
+        return Math.round((time - 1) / day) + ' days ago';
+    if (time <= 45 * day)
+        return 'a month ago';
+    if (time <= 345 * day)
+        return Math.round((time - 1) / month) + ' months ago';
+    if (time <= 545 * day)
+        return 'a year ago';
+    return Math.round((time - 1) / year) + ' years ago';    
 }
 
 
