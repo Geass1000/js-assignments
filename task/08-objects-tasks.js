@@ -23,29 +23,12 @@
  *    console.log(r.getArea());   // => 200
  */
 function Rectangle(width, height) {
-    var obj = Object.create(Object.prototype, {
-        width: { 
-            value: width,
-            writable: true,
-            enumerable: true,
-            configurable: true
-        },
-        height: { 
-            value: height,
-            writable: true,
-            enumerable: true,
-            configurable: true 
-        },
-        getArea: { 
-            value: function () { return this.width * this.height; },
-            writable: true,
-            enumerable: false,
-            configurable: true
-        }        
-    }); 
-    return obj;
+    this.width = width;
+    this.height = height; 
 }
-
+Rectangle.prototype.getArea = function () { 
+    return this.width * this.height; 
+};
 
 /**
  * Returns the JSON representation of specified object
@@ -77,14 +60,7 @@ function fromJSON(proto, json) {
     var obj = new proto.constructor();
     var js = JSON.parse(json);
     for (var i in js)
-    {
-        Object.defineProperty(obj, i, { 
-            value: js[i],
-            writable: true,
-            enumerable: true,
-            configurable: true
-        });
-    }
+        obj[i] = js[i];
     return obj;
 }
 
@@ -253,9 +229,7 @@ myCssSelectorBuilder.prototype = {
     },
 
     combine: function(selector1, combinator, selector2) {
-        var value = selector1.stringify() 
-                    + " " + combinator + " " 
-                    + selector2.stringify();
+        var value = `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
         this.arrSelector.push(value);
         return this;
     },

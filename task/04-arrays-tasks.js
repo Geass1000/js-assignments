@@ -348,7 +348,7 @@ function sortDigitNamesByNumericOrder(arr) {
  */
 function getItemsSum(arr) {
    var count = 0;
-   arr.map(function (d) { count += d; return d; });
+   arr.map( (d) => (count += d) );
    return count;
 }
  
@@ -504,9 +504,8 @@ function getIntervalArray(start, end) {
  */
 function distinct(arr) {
    return arr.reverse()
-             .filter(function (d, i) { return arr.indexOf(d, i + 1) === -1; })
+             .filter( (d, i) => (arr.indexOf(d, i + 1) === -1) )
              .reverse();
-   // using 2 reverse for symmetry 
 }
 
 /**
@@ -544,8 +543,8 @@ function group(array, keySelector, valueSelector) {
    array.map(function (d) { 
       if (!m.has(keySelector(d)))
         m.set(keySelector(d), 
-              array.filter( v => (keySelector(v) === keySelector(d)) )
-                   .map( v => (valueSelector(v)) ));
+              array.filter( (v) => (keySelector(v) === keySelector(d)) )
+                   .map( (v) => (valueSelector(v)) ));
       return d;
    });
    return m;
@@ -586,10 +585,7 @@ function selectMany(arr, childrenSelector) {
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
 function getElementByIndexes(arr, indexes) {
-    indexes.map(function (d) {
-        arr = arr[d];
-        return d;
-    });
+    indexes.map( (d) => (arr = arr[d]) );
     return arr;
 }
 

@@ -30,12 +30,11 @@
  *
  */
 function getFizzBuzz(num) {
+    if (num % 15 === 0)
+        return "FizzBuzz";
     if (num % 3 === 0)
-        if (num % 5 === 0) 
-            return "FizzBuzz";
-        else 
-            return "Fizz";
-    else if (num % 5 === 0) 
+        return "Fizz";
+    if (num % 5 === 0)
         return "Buzz";
     return num;
 }
@@ -74,7 +73,7 @@ function getFactorial(n) {
  */
 function getSumBetweenNumbers(n1, n2) {
     var sum = 0;
-    while(n1 <= n2) { sum += n1; n1++; }
+    while(n1 <= n2) { sum += n1++; }
     return sum;
 }
 
@@ -223,7 +222,7 @@ function findFirstSingleChar(str) {
  */
 function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
     var lbkt = isStartIncluded ? '[' : '(',
-        rbkt = isEndIncluded ? ']' : ')';
+        rbkt = isEndIncluded   ? ']' : ')';
     if (a < b)
         return `${lbkt}${a}, ${b}${rbkt}`;
     return `${lbkt}${b}, ${a}${rbkt}`;
