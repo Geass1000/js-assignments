@@ -10,13 +10,13 @@
  * @return {bool}
  *
  * @example
- *   var puzzle = [ 
+ *   var puzzle = [
  *      'ANGULAR',
  *      'REDNCAE',
  *      'RFIDTCL',
  *      'AGNEGSA',
  *      'YTIRTSP',
- *   ]; 
+ *   ];
  *   'ANGULAR'   => true   (first row)
  *   'REACT'     => true   (starting from the top-right R adn follow the ↓ ← ← ↓ )
  *   'UNDEFINED' => true
@@ -25,18 +25,116 @@
  *   'CLASS'     => true
  *   'ARRAY'     => true   (first column)
  *   'FUNCTION'  => false
- *   'NULL'      => false 
+ *   'NULL'      => false
  */
-function findStringInSnakingPuzzle(puzzle, searchStr) {
-    throw new Error('Not implemented');
-}
+ function findStringInSnakingPuzzle(puzzle, searchStr) {
+   var obj  = new Graph(puzzle, searchStr);
+   return obj.findWord();
+ }
+
+ function Graph (puzzle, searchStr) {
+   this.puzzle = puzzle.map( (d) => d.split("") );
+   this.puzzle = this.puzzle.map( (data, i) => {
+     return data.map( (d, j) => new Vertex(d, i, j));
+   });
+   this.searchStr = searchStr;
+
+   this.height = this.puzzle.length;
+   if (this.height <= 0) throw new Error('Puzzle hasn\'t row!');
+   this.width = this.puzzle[0].length;
+ }
+
+ Graph.prototype = {
+   findWord () {
+     var i, j;
+     while (true) {
+       for (i = 0; i < this.height; i++) {
+         for (j = 0; j < this.width; j++)
+           if (this.puzzle[i][j].isEnable() &&
+               this.puzzle[i][j].letter === this.searchStr[0]) break;
+         if (j !== this.width) break;
+       }
+       if (i === this.height) return false;
+       var cur = this.puzzle[i][j];
+       cur.Enable = false;
+       this.index = 1;
+
+       while (true) {
+         if (!cur.isUsed()) {
+           cur.Used = true;
+           var neighbors = this.getNeighbor(cur);
+           cur.ways = neighbors.filter( (d) => {
+             return this.searchStr[this.index] === d.letter
+           });
+           this.index++;
+         }
+         if (this.index - 1 === this.searchStr.length) return true;
+         if (cur.ways.length === 0) {
+           var prev = cur.prev;
+           cur.prev = null;
+           cur.Used = false;
+           this.index--;
+           cur = prev;
+         }
+         else {
+           var next = cur.ways.pop();
+           next.prev = cur;
+           cur = next;
+         }
+         if (cur === null) break;
+       }
+     }
+   },
+   getNeighbor (vertex) {
+     var arr = [];
+     if (vertex.y > 0 &&
+         !this.puzzle[vertex.y - 1][vertex.x].isUsed())
+       arr.push(this.puzzle[vertex.y - 1][vertex.x]);
+     if (vertex.y < this.height - 1 &&
+         !this.puzzle[vertex.y + 1][vertex.x].isUsed())
+       arr.push(this.puzzle[vertex.y + 1][vertex.x]);
+     if (vertex.x > 0 &&
+         !this.puzzle[vertex.y][vertex.x - 1].isUsed())
+       arr.push(this.puzzle[vertex.y][vertex.x - 1]);
+     if (vertex.x < this.width - 1 &&
+         !this.puzzle[vertex.y][vertex.x + 1].isUsed())
+       arr.push(this.puzzle[vertex.y][vertex.x + 1]);
+     return arr;
+   },
+ }
+
+ function Vertex (letter, y, x) {
+   this.letter = letter;
+   this.used = false;
+   this.enable = true;
+   this.prev = null;
+   this.ways = [];
+   this.x = x;
+   this.y = y;
+ }
+ Vertex.prototype = {
+   set Enable (val) {
+     if (typeof val !== "boolean") throw new Error('Data Error!');
+     this.enable = val;
+   },
+   isEnable () {
+     return this.enable;
+   },
+   set Used (val) {
+     if (typeof val !== "boolean") throw new Error('Data Error!');
+     this.used = val;
+   },
+   isUsed () {
+     return this.used;
+   },
+ }
 
 
 /**
  * Returns all permutations of the specified string.
  * Assume all chars in the specified string are different.
  * The order of permutations does not matter.
- * 
+ *
  * @param {string} chars
  * @return {Iterable.<string>} all posible strings constructed with the chars from the specfied string
  *
@@ -53,9 +151,9 @@ function* getPermutations(chars) {
  * Returns the most profit from stock quotes.
  * Stock quotes are stores in an array in order of date.
  * The stock profit is the difference in prices in buying and selling stock.
- * Each day, you can either buy one unit of stock, sell any number of stock units you have already bought, or do nothing. 
+ * Each day, you can either buy one unit of stock, sell any number of stock units you have already bought, or do nothing.
  * Therefore, the most profit is the maximum difference of all pairs in a sequence of stock prices.
- * 
+ *
  * @param {array} quotes
  * @return {number} max profit
  *
@@ -73,15 +171,15 @@ function getMostProfitFromStockQuotes(quotes) {
  * Class representing the url shorting helper.
  * Feel free to implement any algorithm, but do not store link in the key\value stores.
  * The short link can be at least 1.5 times shorter than the original url.
- * 
+ *
  * @class
  *
  * @example
- *    
+ *
  *     var urlShortener = new UrlShortener();
  *     var shortLink = urlShortener.encode('https://en.wikipedia.org/wiki/URL_shortening');
  *     var original  = urlShortener.decode(shortLink); // => 'https://en.wikipedia.org/wiki/URL_shortening'
- * 
+ *
  */
 function UrlShortener() {
     this.urlAllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"+
@@ -94,10 +192,10 @@ UrlShortener.prototype = {
     encode: function(url) {
         throw new Error('Not implemented');
     },
-    
+
     decode: function(code) {
         throw new Error('Not implemented');
-    } 
+    }
 }
 
 
