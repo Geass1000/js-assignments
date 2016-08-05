@@ -179,9 +179,22 @@
  *    [ 6, 5, 4, 3, 2, 1]   => 0   (nothing to buy)
  *    [ 1, 6, 5, 10, 8, 7 ] => 18  (buy at 1,6,5 and sell all at 10)
  */
-function getMostProfitFromStockQuotes(quotes) {
-    throw new Error('Not implemented');
-}
+ function getMostProfitFromStockQuotes(quotes) {
+   var i;
+   var result = 0;
+   while (quotes.length > 0) {
+     var sum = 0;
+     var max = getMaxOfArray(quotes);
+     var index = quotes.indexOf(max);
+     for (i = 0; i < index; i++) sum += quotes[i];
+     result += index * quotes[i] - sum;
+     quotes = quotes.slice(index + 1);
+   }
+   return result;
+ }
+ function getMaxOfArray(numArray) {
+   return Math.max.apply(null, numArray);
+ }
 
 
 /**
