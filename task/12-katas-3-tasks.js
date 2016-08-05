@@ -142,9 +142,26 @@
  *    'ab'  => 'ab','ba'
  *    'abc' => 'abc','acb','bac','bca','cab','cba'
  */
-function* getPermutations(chars) {
-    throw new Error('Not implemented');
-}
+ function* getPermutations(chars) {
+   var seq = chars.split("");
+   var len = seq.length;
+   var coomb = fact(len) - 1;
+   var iter = 0;
+   if (len === 1) { yield chars; return; }
+   while (true) {
+     var number = "000".repeat(len - 1) + (iter++).toString(len);
+     number = number.slice(-len).split("").map( (d) => +d );
+     var check = number.filter( (data) => {
+       return number.filter( (d) => d === data ).length === 1;
+     }).length;
+     if (check !== len) continue;
+     yield number.map( (d) => seq[d]).join("");
+     if (coomb-- === 0) return;
+   }
+ }
+ function fact(n) {
+   return n ? n * fact(n - 1) : 1;
+ }
 
 
 /**
