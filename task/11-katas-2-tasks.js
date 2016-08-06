@@ -414,7 +414,7 @@ Graph.prototype = {
     // Преобразование в строку
     var mas = figure.map( (data) => {
       return data.map( (d) => {
-        if (d !== null) return d.type;
+        if (d !== null && d.isPath) return d.type;
         else return " ";
       });
     });
